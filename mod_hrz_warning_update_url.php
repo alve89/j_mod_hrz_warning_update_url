@@ -25,8 +25,10 @@ if(explode('.', $_SERVER['HTTP_HOST'])[0] == $params->get('subdomain')) {
     JFactory::getApplication()->enqueueMessage("You're on the specified URL!", 'notice');
   }
 
+  $templateSettings = json_decode(ModHrzWarningUpdateUrlHelper::getTemplateSettings());
+
   if(!file_exists(dirname(__FILE__) . '/oldcolors.txt')) {
-    $templateSettings = json_decode(ModHrzWarningUpdateUrlHelper::getTemplateSettings());
+    //$templateSettings = json_decode(ModHrzWarningUpdateUrlHelper::getTemplateSettings());
     file_put_contents(dirname(__FILE__) . '/oldcolors.txt', json_encode(
                                   array('templateColor'=>$templateSettings->templateColor,
                                         'headerColor'  => $templateSettings->headerColor)));

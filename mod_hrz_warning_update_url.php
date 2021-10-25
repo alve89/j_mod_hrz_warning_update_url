@@ -17,20 +17,22 @@ require_once dirname(__FILE__) . '/helper.php';
 //ModHrzWarningUpdateUrlHelper::varDump();
 
 if(explode('.', $_SERVER['HTTP_HOST'])[0] == $params->get('subdomain')) {
-//  $application->enqueueMessage(JText::_("You're on the specified URL!", 'notice'));
   if($params->get('showNotice')
   && $params->get('useRandom')
   && rand(1,abs(intval($params->get('frequency')))) == 1) {
-    //ModHrzWarningUpdateUrlHelper::varDump($nr);
     JFactory::getApplication()->enqueueMessage("You're on the specified URL!", 'notice');
   }
 
+  $templateSettings = json_decode(ModHrzWarningUpdateUrlHelper::getTemplateSettings()); // from DB
+
   if(!file_exists(dirname(__FILE__) . '/oldcolors.txt')) {
-    $templateSettings = json_decode(ModHrzWarningUpdateUrlHelper::getTemplateSettings());
-    file_put_contents(dirname(__FILE__) . '/oldcolors.txt', json_encode(
-                                  array('templateColor'=>$templateSettings->templateColor,
-                                        'headerColor'  => $templateSettings->headerColor)));
-    JFactory::getApplication()->enqueueMessage('File "oldcolors.txt" was created, colors stored');
+    if( file_put_contents(dirname(__FILE__) . '/oldcolors.txt', json_encode(array('templateColor'=>$templateSettings->templateColor,
+                                                                              'headerColor'  => $templateSettings->headerColor)) !== false) ) {
+      JFactory::getApplication()->enqueueMessage('File "oldcolors.txt" was created, colors stored');
+    }
+    else {
+      JFactory::getApplication()->enqueueMessage('File "oldcolors.txt" was NOT created!', 'error');
+    }
   }
 
   if($params->get('resetColors')) {
